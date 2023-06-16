@@ -18,14 +18,15 @@
                 <label for="numberOfQuestions">
                     <h4>How many questions do you want?</h4>
                 </label>
-                <input id="numberOfQuestions" type="range" min="1" max="10" value="5"><br>
+                <input id="numberOfQuestions" type="range" min="1" max="10" value="5" oninput="this.nextElementSibling.value=this.value">
+                <output></output><br>
                 <h4>Choose Difficulty</h4>
                   <input type="radio" id="hard" name="choose-difficulty" value="hard">
                   <label for="hard">Hard</label><br>
                   <input type="radio" id="medium" name="choose-difficulty" value="medium">
                   <label for="medium">Medium</label><br>
                   <input type="radio" id="easy" name="choose-difficulty" value="easy">
-                  <label for="easy">Easy</label><br><br>
+                  <label for="easy">Easy</label><br>
                   <input class = "btn" type="submit" value="Start">
                 </form> 
 
