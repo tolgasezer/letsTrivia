@@ -110,6 +110,9 @@ const getNewQuestion = () => {
   }
   availableQuestions.splice(questionIndex, 1);
 };
+const findTruth = () =>{
+
+};
 
 const endGame = (questionLength) => {
   nextBtn.classList.add('hidden');
@@ -125,14 +128,16 @@ const restartQuiz = () => {
   startGame();
 };
 
-nextBtn.addEventListener('click', () => {
+//Buradan her soru icin dogru yanlis kontrol edip cerceve ekleyecegim. getnewquestion icin de index ve prev buton eklemem gerekli
+const selectedHandler = () =>{
   const selected = document.querySelector('.selected');
   console.log(selected.innerHTML);
   if (selected.innerText == currentQuestion.choiceText[currentQuestion.answer]) {
     score++;
   }
   getNewQuestion();
-});
-restartBtn.addEventListener('click', restartQuiz);
+};
 
+nextBtn.addEventListener('click', selectedHandler);
+restartBtn.addEventListener('click', restartQuiz);
 initGame();
