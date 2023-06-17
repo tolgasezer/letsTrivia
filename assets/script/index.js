@@ -71,6 +71,30 @@ const shuffle = (array) => {
   return array;
 };
 
+const selectChoice = (choiceElement) =>{
+  const allChoices = document.querySelectorAll('.choice-container');
+    allChoices.forEach((choice) => {
+      choice.classList.remove('selected');
+    });
+    choiceElement.classList.add('selected');
+    enableNextButton();
+}
+
+const createChoiceElement = (choiceText) =>{
+  const newChoice = document.createElement('div');
+  const choiceTextNode = document.createTextNode(choiceText);
+  newChoice.appendChild(choiceTextNode);
+  choiceContainer.appendChild(newChoice);
+  newChoice.classList.add('choice-container');
+
+  newChoice.addEventListener('click', () => {
+    selectChoice(newChoice);
+  });
+}
+const enableNextButton = () => {
+  nextBtn.removeAttribute('disabled');
+};
+
 const getNewQuestion = () => {
   const questionLength = questions.length;
   const availableQuestionsLength = availableQuestions.length;
@@ -88,32 +112,12 @@ const getNewQuestion = () => {
   question.innerText = currentQuestion.question;
   questionCounter++;
 
-  for (let i = 0; i < currentQuestion.choiceText.length; i++) {
-    const newChoice = document.createElement('div');
-    const choiceTextNode = document.createTextNode(`${currentQuestion.choiceText[i]}`);
-    newChoice.appendChild(choiceTextNode);
-    choiceContainer.appendChild(newChoice);
-    newChoice.classList.add('choice-container'); //prefix i feda ettik ama olsun.
-
-    newChoice.addEventListener('click', () => {
-      // Tüm choice-container'ları seçim yapılmamış duruma getir
-      const allChoices = document.querySelectorAll('.choice-container');
-      allChoices.forEach((choice) => {
-        choice.classList.remove('selected');
-      });
-
-      // Seçili olan choice-containera selected classı ekle
-      newChoice.classList.add('selected');
-
-      //console.log(choicesArray.indexOf('div.choice-container.selected'));
-      nextBtn.removeAttribute('disabled');
-    });
-  }
-  //availableQuestions.splice(questionIndex, 1);
+  for (let i = 0; i < currentQuestion.choiceText.length; i++) {  
+    createChoiceElement(currentQuestion.choiceText[i]);
+  };
+  //availableQuestions.splice(questionIndex, 1); gerek kalmadi. Artik sorulari questionCounter uzerinden donuyoruz
 };
-const findTruth = () =>{
 
-};
 
 //console.log(questionCounter);
 
