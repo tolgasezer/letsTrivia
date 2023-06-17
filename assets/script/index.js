@@ -54,7 +54,7 @@ const mapQuestions = (unmappedQuestions) => {
     return formattedQuestion;
   });
 };
-
+console.log(questions)
 const shuffle = (array) => {
   let currentIndex = array.length;
   let temporaryValue, randomIndex;
@@ -74,18 +74,19 @@ const shuffle = (array) => {
 const getNewQuestion = () => {
   const questionLength = questions.length;
   const availableQuestionsLength = availableQuestions.length;
+  console.log(questionCounter);
 
-  if (availableQuestionsLength === 0 || questionCounter > questionLength) {
+  if (availableQuestionsLength === 0 || questionCounter >= questionLength) {
     endGame(questionLength);
     return;
   }
 
   choiceContainer.innerText = '';
   nextBtn.setAttribute('disabled', '');
-  questionCounter++;
-  const questionIndex = Math.floor(Math.random() * availableQuestionsLength);
-  currentQuestion = availableQuestions[questionIndex];
+  //const questionIndex = Math.floor(Math.random() * availableQuestionsLength);
+  currentQuestion = availableQuestions[questionCounter];
   question.innerText = currentQuestion.question;
+  questionCounter++;
 
   for (let i = 0; i < currentQuestion.choiceText.length; i++) {
     const newChoice = document.createElement('div');
@@ -108,11 +109,13 @@ const getNewQuestion = () => {
       nextBtn.removeAttribute('disabled');
     });
   }
-  availableQuestions.splice(questionIndex, 1);
+  //availableQuestions.splice(questionIndex, 1);
 };
 const findTruth = () =>{
 
 };
+
+//console.log(questionCounter);
 
 const endGame = (questionLength) => {
   nextBtn.classList.add('hidden');
@@ -136,6 +139,7 @@ const selectedHandler = () =>{
     score++;
   }
   getNewQuestion();
+  
 };
 
 nextBtn.addEventListener('click', selectedHandler);
