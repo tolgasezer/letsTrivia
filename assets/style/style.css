@@ -106,7 +106,7 @@ h3{
     
 }
 
-.next-btn, .restart-btn {
+.next-btn, .restart-btn .prev-btn{
     margin-left: auto;
   
 }
