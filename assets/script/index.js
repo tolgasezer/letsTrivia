@@ -15,11 +15,13 @@ const numberOfQuestions = sessionStorage.getItem('numberOfQuestions');
 let currentQuestion = {};
 let score = 0;
 let questionCounter = 0;
+let previousCounter = 0;
 let availableQuestions = [];
-let currentQuestionIndex = 0;
+//let currentQuestionIndex = 0;
 let questions = [];
-let myAnswers = [];
-let prevQuestions = [];
+//let prevQuestions = [];
+//let prevAnswer = [];
+
 // index uzerinden ilerlemeli
 // geri butonu olmali
 // cevap verildikten sonra dogru cevap yesil, yanlis cevaplar kirmizi, kullanicinin cevabina border
@@ -30,7 +32,8 @@ const initGame = async () => {
   score = 0;
   questionCounter = 0;
   availableQuestions = [...questions];
-  getNewQuestion();
+  showQuestion();
+  disableNextButton();
   game.classList.remove('hidden');
   loader.classList.add('hidden');
 };
@@ -56,7 +59,7 @@ const mapQuestions = (unmappedQuestions) => {
     return formattedQuestion;
   });
 };
-console.log(availableQuestions)
+
 const shuffle = (array) => {
   let currentIndex = array.length;
   let temporaryValue, randomIndex;
@@ -80,6 +83,7 @@ const selectChoice = (choiceElement) =>{
     });
     choiceElement.classList.add('selected');
     enableNextButton();
+    
 }
 
 const createChoiceElement = (choiceText) =>{
@@ -92,15 +96,21 @@ const createChoiceElement = (choiceText) =>{
   newChoice.addEventListener('click', () => {
     selectChoice(newChoice);
   });
-}
+  
+};
+
+const disableNextButton = () => {
+  nextBtn.setAttribute('disabled', '');
+};
 const enableNextButton = () => {
   nextBtn.removeAttribute('disabled');
 };
 
-const getNewQuestion = () => {
+
+const showQuestion = () => {
   //const questionLength = questions.length;
   const availableQuestionsLength = availableQuestions.length;
-  console.log(questionCounter);
+  //console.log(questionCounter);
 
   if (availableQuestionsLength === 0 || questionCounter >= availableQuestionsLength) {
     endGame(availableQuestionsLength);
@@ -108,20 +118,59 @@ const getNewQuestion = () => {
   }
 
   choiceContainer.innerText = '';
-  nextBtn.setAttribute('disabled', '');
+  
   //const questionIndex = Math.floor(Math.random() * availableQuestionsLength);
   currentQuestion = availableQuestions[questionCounter];
   question.innerText = currentQuestion.question;
-  questionCounter++;
-
+  
   for (let i = 0; i < currentQuestion.choiceText.length; i++) {  
     createChoiceElement(currentQuestion.choiceText[i]);
   };
   //availableQuestions.splice(questionIndex, 1); gerek kalmadi. Artik sorulari questionCounter uzerinden donuyoruz
 };
 
+const nextQuestion = () =>{
+  if (previousCounter > 0){
+    previousCounter--;
+  } 
+  if (previousCounter ==0){
+    disableNextButton();
+  };
+  
+  questionCounter++;
+  showQuestion();
+};
 
-//console.log(questionCounter);
+const prevQuestion = () => {
+  if (previousCounter >= 0){
+    enableNextButton();
+  }
+  
+  previousCounter++;
+  
+  if (questionCounter > 0) {
+    const selectedChoice = currentQuestion.choiceText.find(choice => choice.selected);
+    console.log(currentQuestion.choiceText)
+    questionCounter--;
+    
+    // Mevcut seçimi saklamak için selected değişkenini kullanalım
+    
+    showQuestion();
+    
+    // Saklanmış seçimi geri yükle
+    if (selectedChoice) {
+      const choices = document.querySelectorAll('.choice-container');
+      choices.forEach(choice => {
+        if (choice.innerText === selectedChoice) {
+          choice.classList.add('selected');
+          choice.setAttribute('data-selected', true);
+        }
+      });
+    }
+  }
+};
+
+
 
 const endGame = (questionLength) => {
   nextBtn.classList.add('hidden');
@@ -137,40 +186,53 @@ const restartQuiz = () => {
   startGame();
 };
 
-//Buradan her soru icin dogru yanlis kontrol edip cerceve ekleyecegim. getnewquestion icin de index ve prev buton eklemem gerekli
-const selectedHandler = () =>{
-  const selected = document.querySelector('.selected');
-  myAnswers.push({ question: currentQuestion, answer: selected.innerText });
-  //prevQuestions.push(currentQuestion);
-  console.log(myAnswers);
-  if (selected.innerText == currentQuestion.choiceText[currentQuestion.answer]) {
-    score++;
-  }
-  getNewQuestion();
+//Buradan her soru icin dogru yanlis kontrol edip cerceve ekleyecegim. showQuestion icin de index ve prev buton eklemem gerekli
+// const selectedHandler = () =>{
+//   const selected = document.querySelector('.selected');
+//   prevQuestions.push(currentQuestion);
+//   prevAnswer.push(selected);
+//   //prevQuestions.push(currentQuestion);
+//   console.log(prevQuestions);
+//   if (selected.innerText == currentQuestion.choiceText[currentQuestion.answer]) {
+//     score++;
+//   }
+//   showQuestion();
   
-};
-//???????????
-const getPrevQuestionWithAnswer = () => {
-  questionCounter--;
-  const prevQues = myAnswers[questionCounter-1].question;
+// };
 
-  question.innerText = prevQues.question;
-  choiceContainer.innerText = '';
-  //questionCounter++;
 
-  for (let i = 0; i < prevQues.choiceText.length; i++) {  
-    createChoiceElement(prevQues.choiceText[i]);
 
-  };
-  selectChoice(prevQues.answer)
-  console.log(prevQues.question);
-  console.log(prevQues.choiceText);
-  console.log(prevQues.answer)
+// const getPrevQuestionWithAnswer = () => {
+  
+//   questionCounter--;
+//   const prevQues = prevQuestions[questionCounter-1];
+//   const prevAns =prevAnswer[questionCounter-1];
+//   //const prevAnswers = prevAnswer[questionCounter]
+//   //const targetChild = prevQues.answer;
+//   //console.log(targetChild);
+//   question.innerText = prevQues.question;
+//   choiceContainer.innerText = '';
+  
+//   //questionCounter++;
+  
+//   for (let i = 0; i < prevQues.choiceText.length; i++) {
+//     const choiceText = prevQues.choiceText[i];
+//     createChoiceElement(choiceText);
+//     if (choiceText == prevAns){
+//       choiceText.classList.add('selected');
+//     }
+    
+//   };
+  
+//   //targetChild.classList.add('selected');
+//   //console.log(prevAnswers)
+//   // console.log(prevQues.question);
+//   // console.log(prevQues.choiceText);
+//   // console.log(prevQues.answer)
 
-};
-//?????? createChoiceElement burada dogru calismayacak ve direkt olarak bu sekilde yazdiramam bunu d
-nextBtn.addEventListener('click', selectedHandler);
+// };
+nextBtn.addEventListener('click', nextQuestion);
 restartBtn.addEventListener('click', restartQuiz);
-prevBtn.addEventListener('click', getPrevQuestionWithAnswer);
+prevBtn.addEventListener('click', prevQuestion);
 
 initGame();
