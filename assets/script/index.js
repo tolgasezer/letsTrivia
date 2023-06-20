@@ -20,7 +20,7 @@ let availableQuestions = [];
 //let currentQuestionIndex = 0;
 let questions = [];
 //let prevQuestions = [];
-//let prevAnswer = [];
+let selections = [];
 
 // index uzerinden ilerlemeli
 // geri butonu olmali
@@ -76,6 +76,20 @@ const shuffle = (array) => {
   return array;
 };
 
+
+const createChoiceElement = (choiceText) =>{
+  const newChoice = document.createElement('div');
+  const choiceTextNode = document.createTextNode(choiceText);
+  newChoice.appendChild(choiceTextNode);
+  choiceContainer.appendChild(newChoice);
+  newChoice.classList.add('choice-container');
+  
+  newChoice.addEventListener('click', () => {
+    selectChoice(newChoice);
+  });
+  
+};
+
 const selectChoice = (choiceElement) =>{
   const allChoices = document.querySelectorAll('.choice-container');
     allChoices.forEach((choice) => {
@@ -84,78 +98,62 @@ const selectChoice = (choiceElement) =>{
     choiceElement.classList.add('selected');
     enableNextButton();
     
-}
-
-const createChoiceElement = (choiceText) =>{
-  const newChoice = document.createElement('div');
-  const choiceTextNode = document.createTextNode(choiceText);
-  newChoice.appendChild(choiceTextNode);
-  choiceContainer.appendChild(newChoice);
-  newChoice.classList.add('choice-container');
-
-  newChoice.addEventListener('click', () => {
-    selectChoice(newChoice);
-  });
-  
 };
 
 const disableNextButton = () => {
   nextBtn.setAttribute('disabled', '');
 };
+
 const enableNextButton = () => {
   nextBtn.removeAttribute('disabled');
 };
 
 
 const showQuestion = () => {
-  //const questionLength = questions.length;
   const availableQuestionsLength = availableQuestions.length;
-  //console.log(questionCounter);
+  
 
-  if (availableQuestionsLength === 0 || questionCounter >= availableQuestionsLength) {
+  if (questionCounter >= availableQuestionsLength) {
     endGame(availableQuestionsLength);
     return;
   }
 
   choiceContainer.innerText = '';
-  
-  //const questionIndex = Math.floor(Math.random() * availableQuestionsLength);
   currentQuestion = availableQuestions[questionCounter];
   question.innerText = currentQuestion.question;
   
   for (let i = 0; i < currentQuestion.choiceText.length; i++) {  
     createChoiceElement(currentQuestion.choiceText[i]);
   };
-  //availableQuestions.splice(questionIndex, 1); gerek kalmadi. Artik sorulari questionCounter uzerinden donuyoruz
+  
 };
 
 const nextQuestion = () =>{
   if (previousCounter > 0){
     previousCounter--;
+
   } 
-  if (previousCounter ==0){
+  if (previousCounter <= 0){
+    const selected = document.querySelector('.selected');
+    selections.push(selected.innerText);
     disableNextButton();
   };
-  
+  console.log(selections);
   questionCounter++;
   showQuestion();
+  restorePreviousSelection();
 };
 
 const prevQuestion = () => {
-  if (previousCounter >= 0){
-    enableNextButton();
-  }
-  
-  previousCounter++;
-  
-  if (questionCounter > 0) {
-    const selectedChoice = currentQuestion.choiceText.find(choice => choice.selected);
-    console.log(currentQuestion.choiceText)
+    
+  if (questionCounter >= 0) {
     questionCounter--;
-    
-    // Mevcut seçimi saklamak için selected değişkenini kullanalım
-    
+    enableNextButton();
+    const revSelections = selections.reverse();
+    const selectedChoice = revSelections[previousCounter];
+    //console.log(currentQuestion.choiceText)
     showQuestion();
+    
     
     // Saklanmış seçimi geri yükle
     if (selectedChoice) {
@@ -163,14 +161,27 @@ const prevQuestion = () => {
       choices.forEach(choice => {
         if (choice.innerText === selectedChoice) {
           choice.classList.add('selected');
-          choice.setAttribute('data-selected', true);
+          
         }
       });
     }
+    
   }
+  console.log(selections);
+  previousCounter++;
 };
 
+const restorePreviousSelection = () => {
 
+  const selectedChoice = selections[previousCounter];
+  const choices = document.querySelectorAll('.choice-container');
+  choices.forEach(choice => {
+    choice.classList.remove('selected');
+    if (choice.innerText === selectedChoice) {
+      choice.classList.add('selected');
+    }
+  });
+};
 
 const endGame = (questionLength) => {
   nextBtn.classList.add('hidden');
