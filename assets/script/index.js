@@ -91,6 +91,16 @@ const createChoiceElement = (choiceText) =>{
   
 };
 
+//burada check edip background vererek ilerleyecegim unutma
+const checkAnswer = () => {
+  if(choiceContainer.contains('.selected')){
+  if(choice.innerText === currentQuestion.choiceText[currentQuestion.answer]){
+    choice.classList.add('bg-success');
+  }else{
+    choice.classList.add('bg-danger');
+  }
+}
+};
 const selectChoice = (choiceElement) =>{
   const allChoices = document.querySelectorAll('.choice-container');
   allChoices.forEach((choice)=>{
@@ -137,6 +147,7 @@ const showQuestion = () => {
 // son tiklamada next button disabled olmuyor
 const nextQuestion = () =>{
   prevBtn.classList.remove('hidden');
+
 
   if (previousCounter > 0){
     previousCounter--;
