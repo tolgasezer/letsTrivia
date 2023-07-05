@@ -21,11 +21,12 @@ let availableQuestions = [];
 let questions = [];
 //let prevQuestions = [];
 let selections = [];
-
-// index uzerinden ilerlemeli
-// geri butonu olmali
-// cevap verildikten sonra dogru cevap yesil, yanlis cevaplar kirmizi, kullanicinin cevabina border
-// cevap verilen soru tekrar gorulebilir ama cevap degistirilemez
+let revSelections = selections.reverse();
+console.log(selections) // selections her prev tiklamasinda ters
+// index uzerinden ilerlemeli ++
+// geri butonu olmali ++
+// cevap verildikten sonra dogru cevap yesil, yanlis cevaplar kirmizi, kullanicinin cevabina border --
+// cevap verilen soru tekrar gorulebilir ama cevap degistirilemez --
 
 const initGame = async () => {
   await getQuestionsAsync();
@@ -92,11 +93,17 @@ const createChoiceElement = (choiceText) =>{
 
 const selectChoice = (choiceElement) =>{
   const allChoices = document.querySelectorAll('.choice-container');
+  allChoices.forEach((choice)=>{
+    choice.setAttribute('disabled', '');
+  })
+  if(!selections[questionCounter]){
+  const allChoices = document.querySelectorAll('.choice-container');
     allChoices.forEach((choice) => {
       choice.classList.remove('selected');
     });
     choiceElement.classList.add('selected');
     enableNextButton();
+  };
     
 };
 
@@ -127,16 +134,18 @@ const showQuestion = () => {
   };
   
 };
-
+// son tiklamada next button disabled olmuyor
 const nextQuestion = () =>{
+  prevBtn.classList.remove('hidden');
+
   if (previousCounter > 0){
     previousCounter--;
 
   } 
-  if (previousCounter <= 0){
+  if (previousCounter === 0 && selections.length === questionCounter){ // ileri geri icin tekrar eklemeleri buradan engelledim.
+    disableNextButton();
     const selected = document.querySelector('.selected');
     selections.push(selected.innerText);
-    disableNextButton();
   };
   console.log(selections);
   questionCounter++;
@@ -146,26 +155,22 @@ const nextQuestion = () =>{
 
 const prevQuestion = () => {
     
-  if (questionCounter >= 0) {
+  if (questionCounter > 0) {
+    
     questionCounter--;
     enableNextButton();
-    const revSelections = selections.reverse();
-    const selectedChoice = revSelections[previousCounter];
+    
+    //const selectedChoice = revSelections[previousCounter];
     //console.log(currentQuestion.choiceText)
     showQuestion();
     
     
     // Saklanmış seçimi geri yükle
-    if (selectedChoice) {
-      const choices = document.querySelectorAll('.choice-container');
-      choices.forEach(choice => {
-        if (choice.innerText === selectedChoice) {
-          choice.classList.add('selected');
-          
-        }
-      });
-    }
+    restorePreviousSelection();
     
+  }
+  if(questionCounter === 0) {
+    prevBtn.classList.add('hidden');
   }
   console.log(selections);
   previousCounter++;
@@ -173,12 +178,13 @@ const prevQuestion = () => {
 
 const restorePreviousSelection = () => {
 
-  const selectedChoice = selections[previousCounter];
+  const selectedChoice = selections[questionCounter];
   const choices = document.querySelectorAll('.choice-container');
   choices.forEach(choice => {
     choice.classList.remove('selected');
     if (choice.innerText === selectedChoice) {
       choice.classList.add('selected');
+      
     }
   });
 };
