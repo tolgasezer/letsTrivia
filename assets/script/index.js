@@ -90,17 +90,11 @@ const createChoiceElement = (choiceText) => {
 };
 
 //burada check edip background vererek ilerleyecegim unutma // felaket sacmaladim. Logic belirsiz
-// const checkAnswer = (choiceElement) => {
- 
-//   if (choiceElement.classList.contains(".selected")) {
-//     if (
-//       choice.innerText === currentQuestion.choiceText[currentQuestion.answer]
-//     ) {
-//       choice.classList.add("selectedCorrect");
-//     } else {
-//       choice.classList.add("selectedWrong");
-//     }
-//   }
+// const checkAnswer = () => {
+//  const allChoices = document.querySelectorAll('choice-container');
+//  allChoices.forEach((choice =>{
+//   console.log(`text ${choice} is selected`);
+//  }))
 // };
 const selectChoice = (choiceElement) => {
   const allChoices = document.querySelectorAll(".choice-container");
@@ -109,16 +103,16 @@ const selectChoice = (choiceElement) => {
     //console.log(choice);
   });
   if (!selections[questionCounter]) {
-    const allChoices = document.querySelectorAll(".choice-container");
+    //const allChoices = document.querySelectorAll(".choice-container");
     allChoices.forEach((choice) => {
       choice.classList.remove("selected");
     });
     choiceElement.classList.add("selected");
-    choiceElement.classList.add('userSelection')
     //checkAnswer(choiceElement);
 
     enableNextButton();
   }
+  
 };
 
 const disableNextButton = () => {
@@ -160,11 +154,12 @@ const nextQuestion = () => {
   }
   if (
     selections[questionCounter] ===
-      currentQuestion.choiceText[currentQuestion.answer] &&
+    currentQuestion.choiceText[currentQuestion.answer] &&
     previousCounter === 0
   ) {
     // geri dondugumde skoru degistirmemesi icin ek kontrol
     console.log("bildin");
+
     score++;
   
   } else {
@@ -199,11 +194,20 @@ const prevQuestion = () => {
 const restorePreviousSelection = () => {
   const selectedChoice = selections[questionCounter];
   const choices = document.querySelectorAll(".choice-container");
+  // const selected = Array.from(document.querySelector('.selected'));
+  // const notSelected = choices.filter(x => !selected.includes(x));
+  // console.log(notSelected);
   choices.forEach((choice) => {
     choice.classList.remove("selected");
     if (choice.innerText === selectedChoice) {
       choice.classList.add("selected");
+      choice.classList.add('user-selection');
     }
+    // if(selectedChoice === currentQuestion.choiceText[questionCounter.answer]){
+    //   choice.classList.add('selected-correct');
+    // }else{
+    //   choice.classList.add('selected-wrong');
+    // }
   });
 };
 
