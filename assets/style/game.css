@@ -27,6 +27,18 @@
     box-sizing: border-box;
     background-color: #56a5eb;
 }
+.selectedCorrect {
+    box-sizing: border-box;
+    background-color: #94eb56;
+
+}
+.selectedWrong {
+  box-sizing: border-box;
+  background-color: #eb6a56;
+}
+.userSelection {
+  border: 0.3rem solid #5c4747;
+}
 
 #loader {
     border: 1.6rem solid white;
