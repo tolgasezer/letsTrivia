@@ -90,22 +90,23 @@ const createChoiceElement = (choiceText) => {
 };
 
 //burada check edip background vererek ilerleyecegim unutma // felaket sacmaladim. Logic belirsiz
-const checkAnswer = (choiceElement) => {
+// const checkAnswer = (choiceElement) => {
  
-  if (choiceElement.classList.contains(".selected")) {
-    if (
-      choice.innerText === currentQuestion.choiceText[currentQuestion.answer]
-    ) {
-      choice.classList.add("bg-success");
-    } else {
-      choice.classList.add("bg-danger");
-    }
-  }
-};
+//   if (choiceElement.classList.contains(".selected")) {
+//     if (
+//       choice.innerText === currentQuestion.choiceText[currentQuestion.answer]
+//     ) {
+//       choice.classList.add("selectedCorrect");
+//     } else {
+//       choice.classList.add("selectedWrong");
+//     }
+//   }
+// };
 const selectChoice = (choiceElement) => {
   const allChoices = document.querySelectorAll(".choice-container");
   allChoices.forEach((choice) => {
     choice.setAttribute("disabled", "");
+    //console.log(choice);
   });
   if (!selections[questionCounter]) {
     const allChoices = document.querySelectorAll(".choice-container");
@@ -113,7 +114,8 @@ const selectChoice = (choiceElement) => {
       choice.classList.remove("selected");
     });
     choiceElement.classList.add("selected");
-    checkAnswer(choiceElement);
+    choiceElement.classList.add('userSelection')
+    //checkAnswer(choiceElement);
 
     enableNextButton();
   }
@@ -146,14 +148,14 @@ const showQuestion = () => {
 // son tiklamada next button disabled olmuyor
 const nextQuestion = () => {
   prevBtn.classList.remove("hidden");
-
+  const selected = document.querySelector(".selected");
   if (previousCounter > 0) {
     previousCounter--;
   }
   if (previousCounter === 0 && selections.length === questionCounter) {
     // ileri geri icin tekrar eklemeleri buradan engelledim.
     disableNextButton();
-    const selected = document.querySelector(".selected");
+    
     selections.push(selected.innerText);
   }
   if (
@@ -164,6 +166,7 @@ const nextQuestion = () => {
     // geri dondugumde skoru degistirmemesi icin ek kontrol
     console.log("bildin");
     score++;
+  
   } else {
     console.log("yanlis");
   }
