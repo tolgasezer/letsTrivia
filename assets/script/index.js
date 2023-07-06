@@ -158,7 +158,7 @@ const nextQuestion = () =>{
     const selected = document.querySelector('.selected');
     selections.push(selected.innerText);
   };
-  if(selections[questionCounter]===currentQuestion.choiceText[currentQuestion.answer]){
+  if(selections[questionCounter]===currentQuestion.choiceText[currentQuestion.answer] && previousCounter === 0){ // geri dondugumde skoru degistirmemesi icin ek kontrol
     console.log('bildin')
     score++;
   }else{
@@ -208,9 +208,17 @@ const restorePreviousSelection = () => {
 };
 
 const endGame = (questionLength) => {
+  
   nextBtn.classList.add('hidden');
   restartBtn.classList.remove('hidden');
-  prevBtn.classList.add('hidden');
+  //prevBtn.classList.add('hidden');
+  prevBtn.addEventListener('click', ()=>{
+    showQuestion();
+    restorePreviousSelection();
+    choiceContainer.style.display = 'block';
+    nextBtn.classList.remove('hidden');
+    
+  });
   question.innerText = `Your Score is: ${score * CORRECT_BONUS}/${questionLength * CORRECT_BONUS}`;
   choiceContainer.style.display = 'none';
   return;
